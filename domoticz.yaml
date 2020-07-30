@@ -1,0 +1,104 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: domoticz
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    volume.beta.kubernetes.io/storage-class: domoticz
+  name: domoticz
+  namespace: domoticz
+spec:
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: 100Mi
+  mountOptions:
+    - hard
+    - nfsvers=4.1
+  nfs:
+    path: /mnt/pool/nfs-shares/domoticz
+    server: 192.168.1.251
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: domoticz
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    volume.beta.kubernetes.io/storage-class: domoticz
+  name: domoticz-claim
+  namespace: domoticz
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: domoticz
+  name: domoticz
+  labels:
+    app: domoticz
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: domoticz
+  template:
+    metadata:
+      labels:
+        app: domoticz
+        name: domoticz
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - node2
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - node2
+      containers:
+      - name: domoticz
+        image: tomaszszuster/domoticz:2020.2
+        command: ['bash', '-c', '/domoticz/domoticz -dbase /domoticz-nfs/domoticz.db -noupdates -log /domoticz-nfs/domoticz.log']
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - name: domoticz
+          mountPath: "/domoticz-nfs"
+      volumes:
+      - name: domoticz
+        persistentVolumeClaim:
+          claimName: domoticz-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: domoticz
+  name: domoticz
+  annotations:
+    prometheus.io/scrape: 'true'
+spec:
+  selector:
+    app: domoticz
+  ports:
+  - port: 8080
+    targetPort: 8080
+    name: domoticz
+  externalIPs:
+    - 192.168.1.129
