@@ -20,10 +20,10 @@ variables:
   CLAIR_OUTPUT: High
   REGISTRY_IMAGE: tomaszszuster/domoticz
 
-image: docker:19.03.11
+image: docker:19.03
 
 services:
-  - docker:19.03.11-dind
+  - docker:19.03-dind
 
 build:
   stage: build
