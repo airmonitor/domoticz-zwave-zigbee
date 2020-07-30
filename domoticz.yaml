@@ -38,8 +38,43 @@ spec:
     requests:
       storage: 100Mi
 ---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    volume.beta.kubernetes.io/storage-class: domoticz-backup
+  name: domoticz-backup
+  namespace: domoticz
+spec:
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: 100Mi
+  mountOptions:
+    - hard
+    - nfsvers=4.1
+  nfs:
+    path: /mnt/pool/nfs-shares/domoticz/backups
+    server: 192.168.1.251
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: domoticz-backup
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    volume.beta.kubernetes.io/storage-class: domoticz-backup
+  name: domoticz-backup-claim
+  namespace: domoticz
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Mi
+---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   namespace: domoticz
   name: domoticz
@@ -47,6 +82,7 @@ metadata:
     app: domoticz
 spec:
   replicas: 1
+  serviceName: domoticz
   selector:
     matchLabels:
       app: domoticz
@@ -56,6 +92,7 @@ spec:
         app: domoticz
         name: domoticz
     spec:
+      terminationGracePeriodSeconds: 60
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -64,7 +101,7 @@ spec:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - node2
+                      - node5
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 1
               preference:
@@ -72,10 +109,12 @@ spec:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - node2
+                      - node5
       containers:
       - name: domoticz
         image: tomaszszuster/domoticz:2020.2
+        securityContext:
+          privileged: true
         ports:
           - containerPort: 8080
         livenessProbe:
@@ -95,10 +134,15 @@ spec:
         volumeMounts:
         - name: domoticz
           mountPath: "/domoticz-nfs"
+        - name: domoticz-backup
+          mountPath: "/domoticz/backups"
       volumes:
       - name: domoticz
         persistentVolumeClaim:
           claimName: domoticz-claim
+      - name: domoticz-backup
+        persistentVolumeClaim:
+          claimName: domoticz-backup-claim
 ---
 apiVersion: v1
 kind: Service
@@ -115,4 +159,4 @@ spec:
     targetPort: 8080
     name: domoticz
   externalIPs:
-    - 192.168.1.129
+    - 192.168.1.132
