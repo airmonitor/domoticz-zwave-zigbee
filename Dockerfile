@@ -82,7 +82,7 @@ RUN \
  git clone https://github.com/OpenZWave/open-zwave open-zwave-read-only && \
  cd open-zwave-read-only && \
  git pull && \
- make -j 3 && \
+ make -j 4 && \
  make install && \
  cd .. && \
  echo "**** install domoticz ****" && \
@@ -90,7 +90,7 @@ RUN \
  cd domoticz && \
  cmake -DBOOST_LIBRARYDIR=/usr/lib/x86_64-linux-gnu -DCMAKE_BUILD_TYPE=Release -DBoost_USE_MULTITHREADED=ON && \
  cmake -USE_STATIC_OPENZWAVE -DCMAKE_BUILD_TYPE=Release CMakeLists.txt && \
- make -j 3 && \
+ make -j 4 && \
  cp domoticz.sh /etc/init.d && \
  chmod +x /etc/init.d/domoticz.sh && \
  update-rc.d domoticz.sh defaults && \
