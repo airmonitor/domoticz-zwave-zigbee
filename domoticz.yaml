@@ -130,7 +130,7 @@ spec:
           initialDelaySeconds: 30
           timeoutSeconds: 30
         command: ['bash', '-c', '/domoticz/domoticz -dbase /domoticz-nfs/domoticz.db -noupdates -log /domoticz-nfs/domoticz.log']
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         volumeMounts:
         - name: domoticz
           mountPath: "/domoticz-nfs"
