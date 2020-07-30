@@ -76,6 +76,20 @@ spec:
       containers:
       - name: domoticz
         image: tomaszszuster/domoticz:2020.2
+        ports:
+          - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 120
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 30
+          timeoutSeconds: 30
         command: ['bash', '-c', '/domoticz/domoticz -dbase /domoticz-nfs/domoticz.db -noupdates -log /domoticz-nfs/domoticz.log']
         imagePullPolicy: IfNotPresent
         volumeMounts:
