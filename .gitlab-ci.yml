@@ -1,0 +1,50 @@
+stages:
+  - lint
+  - build
+  - test
+  - deploy
+  - review
+  - dast  # dummy stage to follow the template guidelines
+  - staging
+  - canary
+  - production
+  - incremental rollout 10%
+  - incremental rollout 25%
+  - incremental rollout 50%
+  - incremental rollout 100%
+  - performance
+  - cleanup
+
+variables:
+  CS_MAJOR_VERSION: 2
+  CLAIR_OUTPUT: High
+  REGISTRY_IMAGE: tomaszszuster/domoticz
+
+image: docker:19.03.11
+
+services:
+  - docker:19.03.11-dind
+
+build:
+  stage: build
+  script:
+    - docker build --cache-from $REGISTRY_IMAGE:2020.2 --tag $REGISTRY_IMAGE:$CI_COMMIT_REF_NAME --tag $REGISTRY_IMAGE:stable .
+    - docker login -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD
+    - docker push $REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+    - docker push $REGISTRY_IMAGE:stable
+  except:
+    changes:
+      - "*.md"
+      - ".gitignore"
+  tags:
+    - arm64
+
+include:
+  - template: Jobs/Code-Quality.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Jobs/Code-Quality.gitlab-ci.yml
+  - template: Jobs/DAST-Default-Branch-Deploy.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Jobs/DAST-Default-Branch-Deploy.gitlab-ci.yml
+  - template: Security/DAST.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Security/DAST.gitlab-ci.yml
+  - template: Security/Container-Scanning.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml
+  - template: Security/Dependency-Scanning.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml
+  - template: Security/License-Management.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Security/License-Management.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml
+
