@@ -115,3 +115,4 @@ RUN \
 	/tmp/* \
 	/var/lib/apt/lists/* \
 	/var/tmp/*
+COPY plugins/* /domoticz/plugins/
