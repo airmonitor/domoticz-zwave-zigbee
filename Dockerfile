@@ -69,7 +69,7 @@ RUN \
  cd ../ && \
  rm Python-3.8.2.tar.xz && \
  rm -fr Python-3.8.2 && \
- python3.8 -m pip --upgrade pip
+ python3.8 -m pip install --upgrade pip
 
 RUN \
  echo "**** Compile cmake ****" && \
