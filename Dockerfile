@@ -28,6 +28,7 @@ RUN \
 	mosquitto-clients \
 	unzip \
 	wget \
+	ca-certificates \
 	zlib1g && \
  echo "**** Set timezone ****" && \
  ln -sf /usr/share/zoneinfo/Europe/Warsaw /etc/localtime && \
