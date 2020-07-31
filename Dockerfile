@@ -138,16 +138,14 @@ RUN cd /domoticz/plugins && git clone --recursive https://github.com/lrybak/domo
 
 RUN \
  cd /domoticz/plugins && \
- git clone https://github.com/mrin/domoticz-mirobot-plugin.git xiaomi-mirobot && \
- cd xiaomi-mirobot && \
- pip3.8 install -r pip_req.txt
+ git clone https://github.com/mrin/domoticz-mirobot-plugin.git xiaomi-mirobot
+# cd xiaomi-mirobot && \
+# pip3.8 install -r pip_req.txt && \
+# cd /domoticz/plugins/xiaomi-mirobot && \
+# chmod +x miio_server.py && \
+# chmod +x miio_server.sh && \
+# ln -s domoticz/plugins/xiaomi-mirobot/miio_server.sh /etc/init.d/miio_server && \
+# update-rc.d miio_server defaults && \
+# systemctl daemon-reload
 
 ADD miio_server.sh /domoticz/plugins/xiaomi-mirobot/
-
-RUN \
- cd /domoticz/plugins/xiaomi-mirobot && \
- chmod +x miio_server.py && \
- chmod +x miio_server.sh && \
- ln -s domoticz/plugins/xiaomi-mirobot/miio_server.sh /etc/init.d/miio_server && \
- update-rc.d miio_server defaults && \
- systemctl daemon-reload
