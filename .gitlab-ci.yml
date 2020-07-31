@@ -44,7 +44,7 @@ build-xiaomi-mirobot:
   stage: build
   script:
     - cd microservices/xiaomi-mirobot
-    - docker build  $REGISTRY_IMAGE_XIAOMI_MIROBOT:$CI_COMMIT_REF_NAME --tag $REGISTRY_IMAGE_XIAOMI_MIROBOT:stable .
+    - docker build --tag $REGISTRY_IMAGE_XIAOMI_MIROBOT:$CI_COMMIT_REF_NAME --tag $REGISTRY_IMAGE_XIAOMI_MIROBOT:stable .
     - docker login -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD
     - docker push $REGISTRY_IMAGE_XIAOMI_MIROBOT:$CI_COMMIT_REF_NAME
     - docker push $REGISTRY_IMAGE_XIAOMI_MIROBOT:stable
