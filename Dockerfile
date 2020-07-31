@@ -26,9 +26,6 @@ RUN \
 	libudev-dev \
 	libusb-0.1-4 \
 	mosquitto-clients \
-	python3-pip \
-	python3-requests \
-    python3-setuptools \
 	unzip \
 	wget \
 	zlib1g && \
@@ -45,13 +42,28 @@ RUN \
     git \
     libcurl4-gnutls-dev \
     libusb-dev \
-    python3-dev \
     zlib1g-dev \
     libcereal-dev \
     liblua5.3-dev \
     libffi-dev \
-    libssl-dev \
-    uthash-dev && \
+    uthash-dev \
+    build-essential \
+    libncurses5-dev \
+    libgdbm-dev \
+    libnss3-dev \
+    libsqlite3-dev \
+    libreadline-dev \
+    libbz2-dev && \
+ echo "**** Compile python3.8 ****" && \
+ curl -O https://www.python.org/ftp/python/3.8.2/Python-3.8.2.tar.xz && \
+ tar -xf Python-3.8.2.tar.xz && \
+ cd Python-3.8.2 && \
+ ./configure --enable-optimizations && \
+ make -j 4 && \
+ make altinstall && \
+ cd ../ && \
+ rm Python-3.8.2.tar.xz && \
+ rm -fr Python-3.8.2
  echo "**** Compile cmake ****" && \
  apt remove -y --purge --auto-remove cmake && \
  wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz && \
@@ -105,9 +117,6 @@ RUN \
 	/tmp/* \
 	/var/lib/apt/lists/* \
 	/var/tmp/*
-RUN  \
- python3.7 -m pip install --upgrade pip setuptools wheel virtualenv && \
- pip3 install python-miio
 
 RUN cd /domoticz/plugins && git clone https://github.com/kofec/domoticz-AirPurifier
 
@@ -117,7 +126,7 @@ RUN \
  cd /domoticz/plugins && \
  git clone https://github.com/mrin/domoticz-mirobot-plugin.git xiaomi-mirobot && \
  cd xiaomi-mirobot && \
- pip3 install -r pip_req.txt
+ pip3.8 install -r pip_req.txt
 
 ADD miio_server.sh /domoticz/plugins/xiaomi-mirobot/
 
