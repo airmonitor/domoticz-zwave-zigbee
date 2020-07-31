@@ -123,14 +123,4 @@ RUN \
 	/var/lib/apt/lists/* \
 	/var/tmp/*
 
-RUN cd /domoticz/plugins && git clone https://github.com/kofec/domoticz-AirPurifier
-
 RUN cd /domoticz/plugins && git clone --recursive https://github.com/lrybak/domoticz-storm-report
-
-RUN \
- cd /domoticz/plugins && \
- git clone https://github.com/mrin/domoticz-mirobot-plugin.git xiaomi-mirobot && \
- cd xiaomi-mirobot && \
- pip3 install gevent python-miio==0.3.1 msgpack-python && \
- cd /domoticz/plugins/xiaomi-mirobot && \
- chmod +x miio_server.py
