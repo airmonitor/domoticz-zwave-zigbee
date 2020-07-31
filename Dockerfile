@@ -138,7 +138,7 @@ RUN cd /domoticz/plugins && git clone --recursive https://github.com/lrybak/domo
 
 RUN \
  cd /domoticz/plugins && \
- git clone https://github.com/mrin/domoticz-mirobot-plugin.git xiaomi-mirobot
+ git clone https://github.com/mrin/domoticz-mirobot-plugin.git xiaomi-mirobot && \
  cd xiaomi-mirobot && \
  pip3.8 install gevent python-miio msgpack && \
  cd /domoticz/plugins/xiaomi-mirobot && \
