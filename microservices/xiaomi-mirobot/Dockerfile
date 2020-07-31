@@ -55,7 +55,6 @@ RUN \
     libbz2-dev
 
 RUN \
- cd /domoticz/plugins && \
  git clone https://github.com/mrin/domoticz-mirobot-plugin.git xiaomi-mirobot && \
  cd xiaomi-mirobot && \
  pip3 install gevent python-miio msgpack && \
