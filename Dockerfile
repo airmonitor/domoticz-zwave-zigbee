@@ -112,12 +112,13 @@ RUN \
  python3-setuptools \
  uthash-dev && \
  echo "**** Installing pip packages ****" && \
- pip3 install python-miio && \
  apt-get clean && \
  rm -rf \
 	/tmp/* \
 	/var/lib/apt/lists/* \
 	/var/tmp/*
+RUN  \
+ pip3 install python-miio && \
 ADD plugins/domoticz-AirPurifier /domoticz/plugins/domoticz-AirPurifier
 ADD plugins/domoticz-storm-report /domoticz/plugins/domoticz-storm-report
 ADD plugins/xiaomi-mirobot /domoticz/plugins/xiaomi-mirobot
