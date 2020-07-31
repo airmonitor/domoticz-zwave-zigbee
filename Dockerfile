@@ -34,7 +34,9 @@ RUN \
  ln -sf /usr/share/zoneinfo/Europe/Warsaw /etc/localtime && \
  apt-get install -y tzdata && \
  echo "Europe/Rome" | tee /etc/timezone && \
- dpkg-reconfigure --frontend noninteractive tzdata && \
+ dpkg-reconfigure --frontend noninteractive tzdata
+
+RUN \
  apt-get install -y --no-install-recommends \
     make \
     gcc \
@@ -54,7 +56,9 @@ RUN \
     libnss3-dev \
     libsqlite3-dev \
     libreadline-dev \
-    libbz2-dev && \
+    libbz2-dev
+
+RUN \
  echo "**** Compile python3.8 ****" && \
  curl -O https://www.python.org/ftp/python/3.8.2/Python-3.8.2.tar.xz && \
  tar -xf Python-3.8.2.tar.xz && \
@@ -65,6 +69,9 @@ RUN \
  cd ../ && \
  rm Python-3.8.2.tar.xz && \
  rm -fr Python-3.8.2 && \
+ python3.8 -m pip upgrade pip
+
+RUN \
  echo "**** Compile cmake ****" && \
  apt remove -y --purge --auto-remove cmake && \
  wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz && \
@@ -75,7 +82,9 @@ RUN \
  make && \
  make install && \
  cd .. && \
- rm -Rf cmake-${CMAKE_VERSION} && \
+ rm -Rf cmake-${CMAKE_VERSION}
+
+RUN \
  echo "**** Build & Install Boost Libraries ****" && \
  apt remove --purge --auto-remove \
     libboost-dev \
@@ -93,7 +102,9 @@ RUN \
  ./b2 stage threading=multi link=static --with-thread --with-system && \
  ./b2 install threading=multi link=static --with-thread --with-system && \
  cd ../../ && \
- rm -Rf boost/ && \
+ rm -Rf boost/
+
+RUN \
  echo "**** Build OpenZwave 1.6+ ****" && \
  git clone https://github.com/OpenZWave/open-zwave open-zwave-read-only && \
  cd open-zwave-read-only && \
@@ -101,6 +112,8 @@ RUN \
  make -j 4 && \
  make install && \
  cd .. && \
+
+RUN \
  echo "**** install domoticz ****" && \
  git clone https://github.com/domoticz/domoticz.git -b ${DOMOTICZ_RELEASE} domoticz && \
  cd domoticz && \
