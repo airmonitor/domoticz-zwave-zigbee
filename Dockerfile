@@ -99,19 +99,19 @@ RUN \
  update-rc.d domoticz.sh defaults && \
  sed -i 's/USERNAME=pi/USERNAME=ubuntu/g' /etc/init.d/domoticz.sh && \
  sed -i 's/DAEMON_ARGS="-daemon"/DAEMON_ARGS=" "/g' /etc/init.d/domoticz.sh && \
- echo "**** Removing not necessary apt packages ****" && \
- apt remove -y \
-    make \
-    gcc \
-    g++ \
-    libssl-dev \
-    git \
-    libcurl4-gnutls-dev \
-    libusb-dev \
-    zlib1g-dev \
-    libcereal-dev \
-    liblua5.3-dev \
-    uthash-dev && \
+# echo "**** Removing not necessary apt packages ****" && \
+# apt remove -y \
+#    make \
+#    gcc \
+#    g++ \
+#    libssl-dev \
+#    git \
+#    libcurl4-gnutls-dev \
+#    libusb-dev \
+#    zlib1g-dev \
+#    libcereal-dev \
+#    liblua5.3-dev \
+#    uthash-dev && \
  echo "**** Installing pip packages ****" && \
  apt-get clean && \
  rm -rf \
