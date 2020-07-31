@@ -142,7 +142,7 @@ RUN \
  cd xiaomi-mirobot && \
  pip3.8 install gevent python-miio msgpack && \
  cd /domoticz/plugins/xiaomi-mirobot && \
- chmod +x miio_server.py && \
+ chmod +x miio_server.py
 # chmod +x miio_server.sh && \
 # ln -s /domoticz/plugins/xiaomi-mirobot/miio_server.sh /etc/init.d/miio_server && \
 # update-rc.d miio_server defaults && \
