@@ -63,7 +63,7 @@ RUN \
  make altinstall && \
  cd ../ && \
  rm Python-3.8.2.tar.xz && \
- rm -fr Python-3.8.2
+ rm -fr Python-3.8.2 && \
  echo "**** Compile cmake ****" && \
  apt remove -y --purge --auto-remove cmake && \
  wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz && \
