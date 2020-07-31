@@ -111,7 +111,7 @@ RUN \
  git pull && \
  make -j 4 && \
  make install && \
- cd .. && \
+ cd ..
 
 RUN \
  echo "**** install domoticz ****" && \
