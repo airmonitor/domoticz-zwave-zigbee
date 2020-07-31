@@ -26,6 +26,10 @@ RUN \
 	libudev-dev \
 	libusb-0.1-4 \
 	mosquitto-clients \
+	python3-pip \
+	python3-requests \
+    python3-setuptools \
+    python3-dev \
 	unzip \
 	wget \
 	ca-certificates \
@@ -58,18 +62,18 @@ RUN \
     libreadline-dev \
     libbz2-dev
 
-RUN \
- echo "**** Compile python3.8 ****" && \
- curl -O https://www.python.org/ftp/python/3.8.2/Python-3.8.2.tar.xz && \
- tar -xf Python-3.8.2.tar.xz && \
- cd Python-3.8.2 && \
- ./configure --enable-optimizations && \
- make -j 4 && \
- make altinstall && \
- cd ../ && \
- rm Python-3.8.2.tar.xz && \
- rm -fr Python-3.8.2 && \
- python3.8 -m pip install --upgrade pip
+#RUN \
+# echo "**** Compile python3.8 ****" && \
+# curl -O https://www.python.org/ftp/python/3.8.2/Python-3.8.2.tar.xz && \
+# tar -xf Python-3.8.2.tar.xz && \
+# cd Python-3.8.2 && \
+# ./configure --enable-optimizations && \
+# make -j 4 && \
+# make altinstall && \
+# cd ../ && \
+# rm Python-3.8.2.tar.xz && \
+# rm -fr Python-3.8.2 && \
+# python3.8 -m pip install --upgrade pip
 
 RUN \
  echo "**** Compile cmake ****" && \
@@ -140,7 +144,7 @@ RUN \
  cd /domoticz/plugins && \
  git clone https://github.com/mrin/domoticz-mirobot-plugin.git xiaomi-mirobot && \
  cd xiaomi-mirobot && \
- pip3.8 install gevent python-miio msgpack && \
+ pip3 install gevent python-miio msgpack && \
  cd /domoticz/plugins/xiaomi-mirobot && \
  chmod +x miio_server.py
 # chmod +x miio_server.sh && \
