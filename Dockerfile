@@ -109,6 +109,7 @@ RUN \
  zlib1g-dev \
  libcereal-dev \
  liblua5.3-dev \
+ python3-setuptools \
  uthash-dev && \
  echo "**** Installing pip packages ****" && \
  pip3 install python-miio && \
