@@ -118,6 +118,7 @@ RUN \
 	/var/lib/apt/lists/* \
 	/var/tmp/*
 RUN  \
+ python3 -m pip install --upgrade pip setuptools wheel && \
  pip3 install python-miio && \
 ADD plugins/domoticz-AirPurifier /domoticz/plugins/domoticz-AirPurifier
 ADD plugins/domoticz-storm-report /domoticz/plugins/domoticz-storm-report
