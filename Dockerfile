@@ -131,6 +131,6 @@ RUN \
  cd /domoticz/plugins && \
  git clone https://github.com/mrin/domoticz-mirobot-plugin.git xiaomi-mirobot && \
  cd xiaomi-mirobot && \
- pip3 install gevent python-miio msgpack && \
+ pip3 install gevent python-miio==0.4.4 msgpack-python && \
  cd /domoticz/plugins/xiaomi-mirobot && \
  chmod +x miio_server.py
