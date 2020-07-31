@@ -19,6 +19,7 @@ variables:
   CS_MAJOR_VERSION: 2
   CLAIR_OUTPUT: High
   REGISTRY_IMAGE: tomaszszuster/domoticz
+  REGISTRY_IMAGE_XIAOMI_MIROBOT: tomaszszuster/domoticz_xiaomi_mirobot
 
 image: docker:19.03
 
@@ -32,6 +33,20 @@ build:
     - docker login -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD
     - docker push $REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
     - docker push $REGISTRY_IMAGE:stable
+  except:
+    changes:
+      - "*.md"
+      - ".gitignore"
+  tags:
+    - arm64
+
+build-xiaomi-mirobot:
+  stage: build
+  script:
+    - docker build --file Dockerfile-xiaomi-mirobot $REGISTRY_IMAGE_XIAOMI_MIROBOT:$CI_COMMIT_REF_NAME --tag $REGISTRY_IMAGE_XIAOMI_MIROBOT:stable .
+    - docker login -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD
+    - docker push $REGISTRY_IMAGE_XIAOMI_MIROBOT:$CI_COMMIT_REF_NAME
+    - docker push $REGISTRY_IMAGE_XIAOMI_MIROBOT:stable
   except:
     changes:
       - "*.md"
