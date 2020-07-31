@@ -28,10 +28,11 @@ services:
 build:
   stage: build
   script:
-    - docker build --cache-from $REGISTRY_IMAGE:2020.2 --tag $REGISTRY_IMAGE:$CI_COMMIT_REF_NAME --tag $REGISTRY_IMAGE:stable .
-    - docker login -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD
-    - docker push $REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
-    - docker push $REGISTRY_IMAGE:stable
+    - ls -la
+#    - docker build --cache-from $REGISTRY_IMAGE:2020.2 --tag $REGISTRY_IMAGE:$CI_COMMIT_REF_NAME --tag $REGISTRY_IMAGE:stable .
+#    - docker login -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD
+#    - docker push $REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+#    - docker push $REGISTRY_IMAGE:stable
   except:
     changes:
       - "*.md"
