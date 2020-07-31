@@ -40,21 +40,6 @@ build:
   tags:
     - arm64
 
-build-xiaomi-mirobot:
-  stage: build
-  script:
-    - cd microservices/xiaomi-mirobot
-    - docker build --tag $REGISTRY_IMAGE_XIAOMI_MIROBOT:$CI_COMMIT_REF_NAME --tag $REGISTRY_IMAGE_XIAOMI_MIROBOT:stable .
-    - docker login -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD
-    - docker push $REGISTRY_IMAGE_XIAOMI_MIROBOT:$CI_COMMIT_REF_NAME
-    - docker push $REGISTRY_IMAGE_XIAOMI_MIROBOT:stable
-  except:
-    changes:
-      - "*.md"
-      - ".gitignore"
-  tags:
-    - arm64
-
 include:
   - template: Jobs/Code-Quality.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Jobs/Code-Quality.gitlab-ci.yml
   - template: Jobs/DAST-Default-Branch-Deploy.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Jobs/DAST-Default-Branch-Deploy.gitlab-ci.yml
