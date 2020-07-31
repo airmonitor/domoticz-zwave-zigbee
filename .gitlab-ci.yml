@@ -29,8 +29,8 @@ build:
   stage: build
   script:
     - ls -la
-    - ls -la plugins/
-    - ls -la plugins/domoticz-AirPurifier
+    - ls -la domoticz-plugins/
+    - ls -la domoticz-plugins/domoticz-AirPurifier
 #    - docker build --cache-from $REGISTRY_IMAGE:2020.2 --tag $REGISTRY_IMAGE:$CI_COMMIT_REF_NAME --tag $REGISTRY_IMAGE:stable .
 #    - docker login -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD
 #    - docker push $REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
