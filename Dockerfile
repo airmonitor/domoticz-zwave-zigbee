@@ -28,6 +28,7 @@ RUN \
 	mosquitto-clients \
 	python3-pip \
 	python3-requests \
+    python3-setuptools \
 	unzip \
 	wget \
 	zlib1g && \
@@ -97,20 +98,18 @@ RUN \
  sed -i 's/USERNAME=pi/USERNAME=ubuntu/g' /etc/init.d/domoticz.sh && \
  sed -i 's/DAEMON_ARGS="-daemon"/DAEMON_ARGS=" "/g' /etc/init.d/domoticz.sh && \
  echo "**** Removing not necessary apt packages ****" && \
- apt-get remove -y \
- make \
- gcc \
- g++ \
- libssl-dev \
- git \
- libcurl4-gnutls-dev \
- libusb-dev \
- python3-dev \
- zlib1g-dev \
- libcereal-dev \
- liblua5.3-dev \
- python3-setuptools \
- uthash-dev && \
+ apt remove -y \
+    make \
+    gcc \
+    g++ \
+    libssl-dev \
+    git \
+    libcurl4-gnutls-dev \
+    libusb-dev \
+    zlib1g-dev \
+    libcereal-dev \
+    liblua5.3-dev \
+    uthash-dev && \
  echo "**** Installing pip packages ****" && \
  apt-get clean && \
  rm -rf \
@@ -118,8 +117,8 @@ RUN \
 	/var/lib/apt/lists/* \
 	/var/tmp/*
 RUN  \
- python3 -m pip install --upgrade pip setuptools wheel && \
- pip3 install python-miio && \
+ python3.7 -m pip install --upgrade pip setuptools wheel && \
+ pip3 install python-miio \
 ADD plugins/domoticz-AirPurifier /domoticz/plugins/domoticz-AirPurifier
 ADD plugins/domoticz-storm-report /domoticz/plugins/domoticz-storm-report
 ADD plugins/xiaomi-mirobot /domoticz/plugins/xiaomi-mirobot
