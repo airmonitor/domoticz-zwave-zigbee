@@ -49,6 +49,8 @@ RUN \
     zlib1g-dev \
     libcereal-dev \
     liblua5.3-dev \
+    libffi-dev \
+    libssl-dev \
     uthash-dev && \
  echo "**** Compile cmake ****" && \
  apt remove -y --purge --auto-remove cmake && \
@@ -117,8 +119,27 @@ RUN \
 	/var/lib/apt/lists/* \
 	/var/tmp/*
 RUN  \
- python3.7 -m pip install --upgrade pip setuptools wheel && \
- pip3 install python-miio \
-ADD domoticz-plugins/domoticz-AirPurifier /domoticz/plugins/domoticz-AirPurifier
-ADD domoticz-plugins/domoticz-storm-report /domoticz/plugins/domoticz-storm-report
-ADD domoticz-plugins/xiaomi-mirobot /domoticz/plugins/xiaomi-mirobot
+ python3.7 -m pip install --upgrade pip setuptools wheel virtualenv && \
+ pip3 install python-miio
+
+RUN cd /domoticz/plugins && git clone https://github.com/kofec/domoticz-AirPurifier
+
+RUN cd /domoticz/plugins && git clone --recursive https://github.com/lrybak/domoticz-storm-report
+
+RUN \
+ cd /domoticz/plugins && \
+ git clone https://github.com/mrin/domoticz-mirobot-plugin.git xiaomi-mirobot && \
+ cd xiaomi-mirobot && \
+ virtualenv -p python3.7 .env && \
+ source .env/bin/activate && \
+ pip3 install -r pip_req.txt
+
+ADD miio_server.sh /domoticz/plugins/xiaomi-mirobot/
+
+RUN \
+ cd /domoticz/plugins/xiaomi-mirobot && \
+ chmod +x miio_server.py && \
+ chmod +x miio_server.sh && \
+ ln -s domoticz/plugins/xiaomi-mirobot/miio_server.sh /etc/init.d/miio_server && \
+ update-rc.d miio_server defaults && \
+ systemctl daemon-reload
