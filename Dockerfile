@@ -119,6 +119,6 @@ RUN \
 RUN  \
  python3.7 -m pip install --upgrade pip setuptools wheel && \
  pip3 install python-miio \
-ADD plugins/domoticz-AirPurifier /domoticz/plugins/domoticz-AirPurifier
-ADD plugins/domoticz-storm-report /domoticz/plugins/domoticz-storm-report
-ADD plugins/xiaomi-mirobot /domoticz/plugins/xiaomi-mirobot
+ADD domoticz-plugins/domoticz-AirPurifier /domoticz/plugins/domoticz-AirPurifier
+ADD domoticz-plugins/domoticz-storm-report /domoticz/plugins/domoticz-storm-report
+ADD domoticz-plugins/xiaomi-mirobot /domoticz/plugins/xiaomi-mirobot
