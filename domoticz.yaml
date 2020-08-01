@@ -129,6 +129,13 @@ spec:
             port: 8080
           initialDelaySeconds: 30
           timeoutSeconds: 30
+        resources:
+          limits:
+            cpu: 500m
+            memory: 200Mi
+          requests:
+            cpu: 500m
+            memory: 200Mi
         command: ['bash', '-c', '/domoticz/domoticz -dbase /domoticz-nfs/domoticz.db -noupdates -log /domoticz-nfs/domoticz.log']
         imagePullPolicy: Always
         volumeMounts:
