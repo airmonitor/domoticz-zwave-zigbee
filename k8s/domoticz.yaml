@@ -19,8 +19,8 @@ spec:
     - hard
     - nfsvers=4.1
   nfs:
-    path: /mnt/pool/nfs-shares/domoticz
-    server: 192.168.1.251
+    path: /mnt/nfs/domoticz
+    server: 192.168.1.129
   persistentVolumeReclaimPolicy: Retain
   storageClassName: domoticz
 ---
@@ -54,8 +54,8 @@ spec:
     - hard
     - nfsvers=4.1
   nfs:
-    path: /mnt/pool/nfs-shares/domoticz/backups
-    server: 192.168.1.251
+    path: /mnt/nfs/domoticz/backups
+    server: 192.168.1.129
   persistentVolumeReclaimPolicy: Retain
   storageClassName: domoticz-backup
 ---
