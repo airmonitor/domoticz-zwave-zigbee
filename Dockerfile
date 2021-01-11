@@ -1,11 +1,13 @@
-FROM debian:stable
+FROM ubuntu:20.04
 
 # set version label
 ARG BUILD_DATE
 ARG VERSION
-ARG DOMOTICZ_RELEASE=2020.2
+ARG DOMOTICZ_COMMIT_ID="f9b16e91a0c870064f23aa9002f2c86022749f76"
 ARG CMAKE_VERSION="3.17.0"
-ARG BOOST_VERSION="1.72.0"
+ARG BOOST_VERSION="1.74.0"
+ARG ZIGBEE2MQTT_PLUGIN_VERSION="v.0.2.1"
+ARG BOOST_VERSION_UNDERSCORE="1_74_0"
 
 # environment settings
 ARG DEBIAN_FRONTEND="noninteractive"
@@ -33,6 +35,7 @@ RUN \
 	unzip \
 	wget \
 	ca-certificates \
+	rsync \
 	zlib1g && \
  echo "**** Set timezone ****" && \
  ln -sf /usr/share/zoneinfo/Europe/Warsaw /etc/localtime && \
@@ -73,7 +76,8 @@ RUN \
  make && \
  make install && \
  cd .. && \
- rm -Rf cmake-${CMAKE_VERSION}
+ rm -Rf cmake-${CMAKE_VERSION} &&\
+ cmake --version
 
 RUN \
  echo "**** Build & Install Boost Libraries ****" && \
@@ -86,9 +90,9 @@ RUN \
     libboost-chrono-dev && \
  mkdir boost && \
  cd boost && \
- wget https://dl.bintray.com/boostorg/release/${BOOST_VERSION}/source/boost_1_72_0.tar.gz && \
- tar xfz boost_1_72_0.tar.gz && \
- cd boost_1_72_0/ && \
+ wget https://dl.bintray.com/boostorg/release/${BOOST_VERSION}/source/boost_${BOOST_VERSION_UNDERSCORE}.tar.gz && \
+ tar xfz boost_${BOOST_VERSION_UNDERSCORE}.tar.gz && \
+ cd boost_${BOOST_VERSION_UNDERSCORE}/ && \
  ./bootstrap.sh && \
  ./b2 stage threading=multi link=static --with-thread --with-system && \
  ./b2 install threading=multi link=static --with-thread --with-system && \
@@ -100,27 +104,47 @@ RUN \
  git clone https://github.com/OpenZWave/open-zwave open-zwave-read-only && \
  cd open-zwave-read-only && \
  git pull && \
- make -j 4 && \
+ make && \
+ make install && \
+ rm libopenzwave.a && \
+ make && \
  make install && \
  cd ..
 
 RUN \
  echo "**** install domoticz ****" && \
- git clone https://github.com/domoticz/domoticz.git -b ${DOMOTICZ_RELEASE} domoticz && \
- cd domoticz && \
- cmake -DBOOST_LIBRARYDIR=/usr/lib/x86_64-linux-gnu -DCMAKE_BUILD_TYPE=Release -DBoost_USE_MULTITHREADED=ON && \
- cmake -USE_STATIC_OPENZWAVE -DCMAKE_BUILD_TYPE=Release CMakeLists.txt && \
- make -j 4 && \
- cp domoticz.sh /etc/init.d && \
- chmod +x /etc/init.d/domoticz.sh && \
- update-rc.d domoticz.sh defaults && \
- sed -i 's/USERNAME=pi/USERNAME=ubuntu/g' /etc/init.d/domoticz.sh && \
- sed -i 's/DAEMON_ARGS="-daemon"/DAEMON_ARGS=" "/g' /etc/init.d/domoticz.sh && \
- echo "**** Installing pip packages ****" && \
+ git clone https://github.com/domoticz/domoticz.git dev-domoticz && \
+ cd dev-domoticz && \
+ git checkout ${DOMOTICZ_COMMIT_ID} && \
+ cmake -DCMAKE_BUILD_TYPE=Release CMakeLists.txt && \
+ make -j 10 && \
+ cd / && \
+ source=/dev-domoticz  && \
+ target=/domoticz && \
+
+ mkdir -p ${target}/backups && \
+ mkdir -p ${target}/plugins && \
+
+# copy your domoticz binary to the target location (binary can also be in bin directory)
+ rsync -I ${source}/domoticz ${target}/domoticz && \
+
+ rsync -rI ${source}/www/ ${target}/www && \
+ rsync -rI ${source}/dzVents/ ${target}/dzVents && \
+ rsync -rI ${source}/Config/ ${target}/Config && \
+ rsync -rI ${source}/scripts/ ${target}/scripts && \
+
+ rsync -I ${source}/History.txt ${target} && \
+ rsync -I ${source}/License.txt ${target} && \
+ rsync -I ${source}/server_cert.pem ${target} && \
+ rm -fr ${source} && \
+
+ echo "**** Installing domoticz plugins ****" && \
+ git clone https://github.com/stas-demydiuk/domoticz-zigbee2mqtt-plugin.git -b ${ZIGBEE2MQTT_PLUGIN_VERSION} /domoticz/plugins/zigbee2mqtt && \
+ echo "**** Cleaning files ****" && \
  apt-get clean && \
  rm -rf \
 	/tmp/* \
 	/var/lib/apt/lists/* \
 	/var/tmp/*
 
-RUN cd /domoticz/plugins && git clone --recursive https://github.com/lrybak/domoticz-storm-report
+CMD /domoticz/domoticz -www 8080 -sslwww 443 -noupdates -dbase /domoticz_db/domoticz.db
