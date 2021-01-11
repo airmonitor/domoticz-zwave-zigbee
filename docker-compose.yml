@@ -1,0 +1,45 @@
+---
+version: "2.1"
+services:
+  mosquitto:
+    container_name: mosquitto
+    image: eclipse-mosquitto:1.6.12
+    restart: always
+    ports:
+        - '1883:1883'
+    volumes:
+      - /mnt/sdb1/mosquitto-docker/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - /mnt/sdb1/mosquitto-docker/data:/mosquitto/data
+      - /mnt/sdb1/mosquitto-docker/log:/mosquitto/log
+    network_mode: host
+  zigbee2mqtt:
+    container_name: zigbee2mqtt
+    depends_on:
+      - mosquitto
+    image: koenkk/zigbee2mqtt:1.17.0
+    volumes:
+      - /mnt/sdb1/zigbee2mqtt-docker/data:/app/data
+      - /run/udev:/run/udev:ro
+    devices:
+      - /dev/ttyACM1:/dev/ttyACM1
+    restart: always
+    privileged: true
+    environment:
+      - TZ=Europe/Warsaw
+    network_mode: host
+  domoticz:
+    container_name: domoticz
+    depends_on:
+      - mosquitto
+      - zigbee2mqtt
+    image: public.ecr.aws/a5i8t9y4/domoticz:f9b16e91a0c870064f23aa9002f2c86022749f76
+    volumes:
+      - /mnt/sdb1/domoticz-docker:/domoticz_db/
+      - /run/udev:/run/udev:ro
+    devices:
+      - /dev/ttyACM0:/dev/ttyACM0
+    restart: always
+    privileged: true
+    environment:
+      - TZ=Europe/Warsaw
+    network_mode: host
