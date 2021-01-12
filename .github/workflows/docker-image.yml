@@ -26,8 +26,10 @@ jobs:
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
+    - name: Branch name
+      run: echo running on branch ${GITHUB_REF##*/}
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag public.ecr.aws/a5i8t9y4/domoticz:$(date +%s)
+      run: docker build . --file Dockerfile --tag public.ecr.aws/a5i8t9y4/domoticz:${GITHUB_REF##*/}
     - name: Push docker image to repository
-      run: docker push public.ecr.aws/a5i8t9y4/domoticz:$(date +%s)
+      run: docker push public.ecr.aws/a5i8t9y4/domoticz:${GITHUB_REF##*/}
