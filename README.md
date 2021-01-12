@@ -1,3 +1,6 @@
+## Build status
+![Docker Image CI](https://github.com/airmonitor/domoticz-zwave-zigbee/workflows/Docker%20Image%20CI/badge.svg)
+
 ## Supported Architectures
 * amd64
 
