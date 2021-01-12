@@ -28,4 +28,6 @@ jobs:
       uses: aws-actions/amazon-ecr-login@v1
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      run: docker build . --file Dockerfile --tag public.ecr.aws/a5i8t9y4/domoticz:$(date +%s)
+    - name: Push docker image to repository
+      run: docker push public.ecr.aws/a5i8t9y4/domoticz:$(date +%s)
