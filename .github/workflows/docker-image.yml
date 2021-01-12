@@ -18,6 +18,7 @@ jobs:
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag public.ecr.aws/a5i8t9y4/domoticz:${GITHUB_REF##*/}
   push:
+    needs: [build]
     runs-on: ubuntu-latest
     steps:
     - name: Configure AWS credentials
