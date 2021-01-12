@@ -14,13 +14,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+    - name: Extract branch name
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      id: extract_branch
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag public.ecr.aws/a5i8t9y4/domoticz:${GITHUB_REF##*/}
+      run: docker build . --file Dockerfile --tag public.ecr.aws/a5i8t9y4/domoticz:${{ steps.extract_branch.outputs.branch }}
   push:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
+    - name: Extract branch name
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      id: extract_branch
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -31,4 +39,4 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
     - name: Push docker image to repository
-      run: docker push public.ecr.aws/a5i8t9y4/domoticz:${GITHUB_REF##*/}
+      run: docker push public.ecr.aws/a5i8t9y4/domoticz:${{ steps.extract_branch.outputs.branch }}
