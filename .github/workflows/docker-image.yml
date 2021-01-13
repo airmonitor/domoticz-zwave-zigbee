@@ -26,5 +26,3 @@ jobs:
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
-    - name: Push docker image to repository
-      run: docker push public.ecr.aws/a5i8t9y4/domoticz:$GITHUB_SHA
