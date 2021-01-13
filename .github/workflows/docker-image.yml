@@ -17,10 +17,6 @@ jobs:
     - uses: actions/checkout@v2
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag public.ecr.aws/a5i8t9y4/domoticz:$GITHUB_SHA
-  push:
-    needs: [build]
-    runs-on: ubuntu-latest
-    steps:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
